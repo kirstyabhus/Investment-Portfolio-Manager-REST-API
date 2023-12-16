@@ -13,7 +13,7 @@ public class ApiConfig {
 
     @Bean
     public String apiKey() {
-        return System.getenv("ALPHAVANTAGE_API_KEY");
+        return System.getenv("ALPHAVANTAGE_API_KEY_2");
     }
 
     @Bean
