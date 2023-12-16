@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.cbfacademy.apiassessment.config.ApiConfig;
+import com.cbfacademy.apiassessment.utility.DateUtility;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -15,6 +16,9 @@ public class AlphaVantageService {
 
     @Autowired
     private ApiConfig apiConfig;
+
+    @Autowired
+    private DateUtility dateUtility;
 
     private JsonNode fetchDataFromAlphaVantage(String query) {
         try {
@@ -48,15 +52,40 @@ public class AlphaVantageService {
 
     public String getNewsSentiment(String tickers) {
         String topic = "technology";
+        // TODO to ensure news is recent, find a way to make "time_from" a week before
+        // current date
+        // TODO will need to find a data formatter?
+        // get current date
+        // turn into YEAR-MM-DD format
+        // go back 1 week from date
+        // turn date into string
+        // remove dashes from string date
+        // add "T0000" to new string date (correct format for AlphaVantage)
+        // use new date in url
+
+        String time_from = dateUtility.getAlphaVantageTimeDateFormat();
+
         JsonNode rootNode = fetchDataFromAlphaVantage(
-                "function=NEWS_SENTIMENT&tickers=" + tickers + "&topics=" + topic + "&sort=RELEVANCE&limit=1");
+                "function=NEWS_SENTIMENT&tickers=" + tickers + "&topics=" + topic + "&sort=RELEVANCE&limit=1"
+                        + "&time_from=" + time_from);
+
         // JsonNode rootNode =
         // fetchDataFromAlphaVantage("function=NEWS_SENTIMENT&tickers=" + tickers);
 
         // tickers={stock}&topics={topic}&sort=RELEVANCE&limit=5
         if (rootNode != null) {
             // Process the rootNode or return it as needed for news sentiment handling
-            return rootNode.toString(); // Example: returning rootNode as a string
+            // return rootNode.toString(); // Example: returning rootNode as a string
+            JsonNode feedNode = rootNode.get("feed");
+            if (feedNode != null && feedNode.isArray()) {
+                for (JsonNode item : feedNode) {
+                    String title = item.get("title").asText();
+                    String url = item.get("url").asText();
+                    String timePublished = item.get("time_published").asText();
+                    String summary = item.get("summary").asText();
+                    return (title + "\n" + url + "\n" + timePublished + "\n" + summary);
+                }
+            }
         }
         return null;
     }
