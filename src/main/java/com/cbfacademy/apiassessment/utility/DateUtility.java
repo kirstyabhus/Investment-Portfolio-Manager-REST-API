@@ -2,6 +2,7 @@ package com.cbfacademy.apiassessment.utility;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.time.temporal.ChronoUnit;
 
 import org.springframework.stereotype.Component;
@@ -26,8 +27,28 @@ public class DateUtility {
 
     // TODO the timeszone of AlphaVantage is UTC, so the artcles show different time
     // to the api response json
-    public String getX(String date) {
-        // get YYYYMMDDT0000
-        return new String("hello");
+    public String getDateTimePretty(String date) {
+
+        // split given date into parts
+        String year = date.substring(0, 4);
+        String month = date.substring(4, 6);
+        String day = date.substring(6, 8);
+        String hour = date.substring(9, 11);
+        String minute = date.substring(11, 13);
+        String second = date.substring(13, 15);
+
+        // create ISO_LOCAL_DATE_TIME string format for date
+        String dateTimeString = year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second;
+
+        // convert string into a LocalDate instance
+        LocalDateTime parsedDateTime = LocalDateTime.parse(dateTimeString);
+
+        // style the date and time (specific format)
+        DateTimeFormatter localizedFormatter = DateTimeFormatter
+                .ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT);
+
+        String formattedDateTime = parsedDateTime.format(localizedFormatter);
+
+        return formattedDateTime;
     }
 }
