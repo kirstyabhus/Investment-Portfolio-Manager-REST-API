@@ -82,8 +82,9 @@ public class AlphaVantageService {
                     String title = item.get("title").asText();
                     String url = item.get("url").asText();
                     String timePublished = item.get("time_published").asText();
+                    String timePublishedFormatted = dateUtility.getDateTimePretty(timePublished);
                     String summary = item.get("summary").asText();
-                    return (title + "\n" + url + "\n" + timePublished + "\n" + summary);
+                    return (title + "\n" + url + "\n" + timePublishedFormatted + "\n" + summary);
                 }
             }
         }
