@@ -129,3 +129,5 @@ The following test script can be used to test the application:
 ```bash
 mvn test
 ```
+### Currently Working On
+- Allowing users to view real-time market news for stock 
