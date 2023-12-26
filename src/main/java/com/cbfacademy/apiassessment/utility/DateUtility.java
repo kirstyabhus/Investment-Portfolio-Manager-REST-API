@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DateUtility {
-    // gets the date 1 week before now
+    // gets the date today
     public String getCurrentFormattedDate() {
         LocalDateTime today = LocalDateTime.now();
         String formattedDate = today.format(DateTimeFormatter.ISO_LOCAL_DATE);
@@ -25,9 +25,11 @@ public class DateUtility {
 
     }
 
-    // TODO the timeszone of AlphaVantage is UTC, so the artcles show different time
-    // to the api response json
+    // styles the date pretty for output
     public String getDateTimePretty(String date) {
+
+        // TODO the timeszone of AlphaVantage is UTC, so the articles show different -
+        // time to the api response json
 
         // split given date into parts
         String year = date.substring(0, 4);

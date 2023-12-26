@@ -20,6 +20,7 @@ public class AlphaVantageService {
     @Autowired
     private DateUtility dateUtility;
 
+    // fetches data from alpha vantage api with given query
     private JsonNode fetchDataFromAlphaVantage(String query) {
         try {
             String baseUrl = apiConfig.getBaseUrl();
@@ -40,6 +41,8 @@ public class AlphaVantageService {
         }
     }
 
+    // get current price of the symbol
+    // TODO change API for price, since alphaV api limit is too small
     public String getPrice(String symbol) {
         JsonNode rootNode = fetchDataFromAlphaVantage("function=GLOBAL_QUOTE&symbol=" + symbol);
 
@@ -51,18 +54,9 @@ public class AlphaVantageService {
     }
 
     public String getNewsSentiment(String tickers) {
-        String topic = "technology";
-        // TODO to ensure news is recent, find a way to make "time_from" a week before
-        // current date
-        // TODO will need to find a data formatter?
-        // get current date
-        // turn into YEAR-MM-DD format
-        // go back 1 week from date
-        // turn date into string
-        // remove dashes from string date
-        // add "T0000" to new string date (correct format for AlphaVantage)
-        // use new date in url
+        String topic = "technology"; // specific to tech for now
 
+        // get current date in alphavantage format
         String time_from = dateUtility.getAlphaVantageTimeDateFormat();
 
         JsonNode rootNode = fetchDataFromAlphaVantage(
@@ -74,8 +68,7 @@ public class AlphaVantageService {
 
         // tickers={stock}&topics={topic}&sort=RELEVANCE&limit=5
         if (rootNode != null) {
-            // Process the rootNode or return it as needed for news sentiment handling
-            // return rootNode.toString(); // Example: returning rootNode as a string
+
             JsonNode feedNode = rootNode.get("feed");
             if (feedNode != null && feedNode.isArray()) {
                 for (JsonNode item : feedNode) {
@@ -84,6 +77,7 @@ public class AlphaVantageService {
                     String timePublished = item.get("time_published").asText();
                     String timePublishedFormatted = dateUtility.getDateTimePretty(timePublished);
                     String summary = item.get("summary").asText();
+
                     return (title + "\n" + url + "\n" + timePublishedFormatted + "\n" + summary);
                 }
             }
