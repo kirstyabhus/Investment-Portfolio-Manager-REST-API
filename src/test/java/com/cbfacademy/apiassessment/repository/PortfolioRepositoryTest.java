@@ -51,6 +51,7 @@ public class PortfolioRepositoryTest {
         // Create mock portfolios list
         mockPortfolios = Arrays.asList(testPortfolio1, testPortfolio2, testPortfolio3);
 
+        // (usually...)
         // Mock the behavior of jsonUtility.readPortfoliosFromJSON to return the mock
         // portfolios list
         Mockito.when(jsonUtility.readPortfoliosFromJSON(anyString())).thenReturn(mockPortfolios);

@@ -72,6 +72,7 @@ public class InvestmentRepository {
         try {
             List<Portfolio> portfolioList = jsonUtility.readPortfoliosFromJSON(filePath);
 
+            // map each portfolio against its id in the map
             portfolioList.forEach(portfolio -> portfoliosMap.put(portfolio.getPortfolioId(), portfolio));
         } catch (IOException e) {
             logger.error("Error populating portfolioMap: {}", e.getMessage(), e);
@@ -187,15 +188,13 @@ public class InvestmentRepository {
      *                                  update of the investment.
      */
     public void save(UUID portfolioId, Investment investment) {
-        if (portfolioId == null) {
-            logger.error("Portfolio ID cannot be null");
-            throw new IllegalArgumentException("Portfolio ID cannot be null");
-        }
+        // behind the scenes the during json deserialisation, new id is generated
+        // for portfolios without an id (i.e. new portfolios)
 
         try {
             populateInvestmentMap(portfolioId);
 
-            // update the totalValue of the investment
+            // update the totalValue of the investment (calculation)
             investment.calculateTotalValue();
 
             assignESGRating(investment);
@@ -346,20 +345,9 @@ public class InvestmentRepository {
                 logger.info("ESG Rating data cannot be found for the investment with symbol: " + symbol);
             }
 
-            // If using an API or fetching updated data, I would update all using this
-            // here
-            /*
-             * for (Investment investment : investments) {
-             * String symbol = investment.getSymbol();
-             * if (esgMap.containsKey(symbol)) {
-             * String esgRating = esgMap.get(symbol);
-             * investment.setESGRating(ESGRating.valueOf(esgRating));
-             * }
-             * }
-             */
         } catch (FileNotFoundException e) {
             // Log the exception
-            logger.error("Unale to find the ESG rating file " + e.getMessage(), e);
+            logger.error("Unable to find the ESG rating file " + e.getMessage(), e);
             throw e;
         } catch (JsonParseException | IllegalArgumentException e) {
             // Log JSON parsing or enum conversion exceptions

@@ -38,35 +38,47 @@ class AppTests {
 
 	@BeforeEach
 	public void setUp() throws Exception {
+		// set up the url before each test (avoid redundancy, consistent setup)
 		this.base = new URL("http://localhost:" + port + "/api/v1/portfolios");
 	}
 
 	@Test
 	@Description("/api/v1/portfolios endpoint returns all portfolios")
 	public void getAllPortfoliosReturnsPortfoliosList() {
+		// send HHTP GET request to the specified URL (expect the response to be
+		// portfolio objects))
 		ResponseEntity<Portfolio[]> response = restTemplate.getForEntity(base.toString(), Portfolio[].class);
+
+		// expect this request to have http status code for ok
 		assertEquals(200, response.getStatusCode().value());
+		// expect at least 1 portfolio object
 		assertTrue(Objects.requireNonNull(response.getBody()).length > 0);
 	}
 
 	@Test
 	@Description("/api/v1/portfolios/{id} endpoint returns portfolio by ID")
 	public void getPortfolioByIdReturnsPortfolio() {
+		// sends HTTP get req, expecting response with List of portfolios
 		ResponseEntity<List<Portfolio>> responseList = restTemplate.exchange(
 				base.toString(),
 				HttpMethod.GET,
 				null,
 				new ParameterizedTypeReference<>() {
 				});
+
+		// extract id of first portfolio in response
 		UUID existingId = Objects.requireNonNull(responseList.getBody()).get(0).getPortfolioId();
 
+		// send HHTP get req using the extracted id
 		ResponseEntity<Portfolio> response = restTemplate.getForEntity(base.toString() + "/" + existingId,
 				Portfolio.class);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
 		// If the portfolio is found, check its attributes or structure as needed
 		Portfolio portfolio = response.getBody();
+		// checks a portfolio is retrieved and not null
 		assertNotNull(portfolio);
+		// compares retreived portfolio with the id extracted earlier
 		assertEquals(existingId, portfolio.getPortfolioId());
 	}
 

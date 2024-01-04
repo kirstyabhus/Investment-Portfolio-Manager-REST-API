@@ -30,8 +30,8 @@ public class ESGRatingDeserializer implements JsonDeserializer<ESGRating> {
 
             // Check if the ratingString is blank or absent in the JSON
             if (ratingString == null || ratingString.trim().isEmpty()) {
-                // Set a default value or handle the absence as needed
-                return ESGRating.UNSPECIFIED; // You can set any default value you want
+                // Set a default value
+                return ESGRating.UNSPECIFIED;
             }
 
             // If not blank, parse the ESGRating normally
