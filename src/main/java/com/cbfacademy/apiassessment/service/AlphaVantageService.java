@@ -1,5 +1,7 @@
 package com.cbfacademy.apiassessment.service;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -66,21 +68,31 @@ public class AlphaVantageService {
         // JsonNode rootNode =
         // fetchDataFromAlphaVantage("function=NEWS_SENTIMENT&tickers=" + tickers);
 
+        ArrayList<String> newsArrayList = new ArrayList<String>();
         // tickers={stock}&topics={topic}&sort=RELEVANCE&limit=5
         if (rootNode != null) {
 
+            // find the news node of the json (news is found in the feed node in the api
+            // json)
             JsonNode feedNode = rootNode.get("feed");
             if (feedNode != null && feedNode.isArray()) {
                 for (JsonNode item : feedNode) {
+                    // get the desired details of the news article
                     String title = item.get("title").asText();
                     String url = item.get("url").asText();
                     String timePublished = item.get("time_published").asText();
                     String timePublishedFormatted = dateUtility.getDateTimePretty(timePublished);
                     String summary = item.get("summary").asText();
 
-                    return (title + "\n" + url + "\n" + timePublishedFormatted + "\n" + summary);
+                    // return (title + "\n" + url + "\n" + timePublishedFormatted + "\n" + summary);
+                    // create a string of the details of the news article in the current iteration
+                    String newsString = title + "\n" + url + "\n" + timePublishedFormatted + "\n" + summary;
+                    // add the news with its details into the array
+                    newsArrayList.add(newsString);
                 }
             }
+            // return all news articles
+            return newsArrayList.toString();
         }
         return null;
     }
