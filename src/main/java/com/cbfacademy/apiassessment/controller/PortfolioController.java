@@ -176,7 +176,7 @@ public class PortfolioController {
         try {
             service.moveInvestment(fromPortfolioId, toPortfolioId, investmentId);
 
-            String feedbackMessage = "Investment moved successfuly";
+            String feedbackMessage = "Investment moved successfully";
             return ResponseEntity.ok().body(feedbackMessage);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
