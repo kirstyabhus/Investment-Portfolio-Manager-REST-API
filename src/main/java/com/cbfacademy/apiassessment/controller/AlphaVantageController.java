@@ -26,6 +26,7 @@ public class AlphaVantageController {
         return alphaVantageService.getPrice(symbol);
     }
 
+    // paths to add: topic, date (maybe)
     @GetMapping("{symbol}/news")
     public String getNewsSentiment(@PathVariable String symbol) {
         return alphaVantageService.getNewsSentiment(symbol);
